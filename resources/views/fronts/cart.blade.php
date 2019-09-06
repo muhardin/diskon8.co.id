@@ -913,7 +913,7 @@ var x = setInterval(function() {
                                 <!--Table body-->
                                 <tbody>
                                     @foreach ($collectionaddress as $itemaddress)
-                                            <tr data-contact="{{@$itemaddress->contact_person}}" data-phone="{{@$itemaddress->phone}}" data-address="{{@$itemaddress->address}}" data-province="{{@$itemaddress->province}}" data-city="{{@$itemaddress->city}}" data-subdistrict="{{@$itemaddress->subdistrict}}" data-postal="{{@$itemaddress->zip_code}}">
+                                            <tr data-contact="{{@$itemaddress->contact_person}}" data-phone="{{@$itemaddress->phone}}" data-address="{{@$itemaddress->address}}" data-province="{{@$itemaddress->province}}" data-city="{{@$itemaddress->city}}" data-subdistrict="{{@$itemaddress->subdistrict}}" data-postal="{{@$itemaddress->zip_code}}" data-email="{{@$itemaddress->email}}">
                                             <th scope="row">
                                             <input class="form-check-input" type="radio" id="choiceAddress" name="address" value="{{@$itemaddress->id}}">
                                             <label class="form-check-label" for="checkbox1" class="label-table"></label>
@@ -954,6 +954,7 @@ var x = setInterval(function() {
                             <p style="color: red; font-size: 16px;"></p>
                         </div>
                     </div>
+                    <div id='addressinput'>
                     <div class="bdbox">
                         <label for="contact_name" class="bdxx"><em>*</em>Nama</label>
                         <div class="textbox">
@@ -1036,6 +1037,7 @@ var x = setInterval(function() {
 								-->
                         </div>
                     </div> --}}
+                </div>
                     <div class="bdbox">
                         <label class="bdxx"><em>*</em>Pilih Kurir</label>
                         <div class="textbox">
@@ -1169,6 +1171,7 @@ var x = setInterval(function() {
                         }
                         else{
                         $(".bdbox.box-save-address").hide();
+                        $("#addressinput").hide();
                         let contact = $(".table-wrapper tbody tr").data('contact'),
                             phone = $(".table-wrapper tbody tr").data('phone'),
                             address = $(".table-wrapper tbody tr").data('address'),
@@ -1176,11 +1179,13 @@ var x = setInterval(function() {
                             city = $(".table-wrapper tbody tr").data('city'),
                             subdistrict = $(".table-wrapper tbody tr").data('subdistrict'),
                             zip_code = $(".table-wrapper tbody tr").data('postal')
+                            email = $(".table-wrapper tbody tr").data('email')
                         $("#userName").val(contact);
                         $("#userPhone").val(phone);
                         $("#userAddress").val(address);
                         $(`#provinceID option[value=${province}]`).attr('selected', 'selected');                                   
                         $("#payname").val(zip_code);
+                        $("#userEmail").val(email);
                             $.ajax({
                                     url: "{{ route('rajaOngkir.getCity') }}",
                                     cache: false,
