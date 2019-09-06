@@ -1,0 +1,119 @@
+@charset "utf-8";
+/* CSS Document */
+html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+body,div,ul,li,p,h1,h2,h3,h4,h5,h6,dl,dt,dd,form,input,select,textarea{margin:0;padding:0;font-weight:normal; font-family:"微软雅黑";font-weight: bolder;}
+em,i{ font-style:normal}
+ul,li{ list-style:none;}
+img{width:100%; max-height:100%; vertical-align: middle; margin:0; padding:0; display:block}
+article,details,footer,header,menu,section {display:block;}
+body{text-align:left; color:#333333; min-width:320px; background-repeat:repeat; background-position:50% 0; }
+a { color:#333333; text-decoration:none; cursor:pointer; }
+a:hover { text-decoration:none; }
+.clr { clear:both; line-height:0; margin:0; padding:0; }
+.wrapper{margin:0 auto; padding:0;}
+@media only screen and (min-width: 1280px){
+	.wrapper{width:750px;}
+	.body{ font-size:.24rem;}
+}
+@media only screen and (min-width: 1008px) and (max-width: 1279px){
+	.wrapper{width:750px;}
+	.body{ font-size:.24rem;}
+}
+@media only screen and (min-width: 640px) and (max-width: 1007px){
+	.wrapper{width:750px;}
+	.body{ font-size:.24rem;}
+}
+@media only screen and (min-width: 480px) and (max-width: 639px){
+	.wrapper{width:100%;}
+	.body{ font-size:.20rem;}
+}
+@media only screen and (min-width: 360px) and (max-width: 479px){
+	.wrapper{width:100%;}
+	.body{ font-size:.18rem;}
+}
+@media only screen and (max-width: 360px){
+	.wrapper{width:100%;}
+	.body{ font-size:.16rem;}
+}
+
+
+.banner{height:6.0rem;overflow:hidden; position:relative;margin-top:5px}
+.banner .d1{width:100%;height:6.0rem;display:block;left:0px;top:0px;}
+.banner .d2{width:100%;height:0.3rem;clear:both;position:absolute;z-index:100;left:0px;bottom:0.1rem;}
+.banner .d2 ul{float:left;position:absolute;left:50%;top:0;margin:0 0 0 -0.3rem;display:inline;}
+.banner .d2 li{width:0.16rem;height:0.16rem;overflow:hidden;cursor:pointer;background:#aea4a3;float:left;margin:0 3px; border-radius:0.8rem; -moz-border-radius:0.8rem; display:inline;}
+.banner .d2 li.nuw{background:#e6131a;}
+
+.fen { margin-top:0.2rem;}
+.fen h3 { font-size:0.24rem;line-height:1em; padding:0.25rem 0 0 0.2rem; color:#e71419; letter-spacing:0.2em;}
+.fen p { font-size:0.18rem; line-height:1.3em; padding:0.1rem 0 0 0.2rem; color:#000; width:2rem; white-space:nowrap;overflow:hidden; text-overflow:ellipsis; }
+.fenl { float:left; margin-left:0.1rem;}
+.fenr { float:right; margin-right:0.1rem;}
+.fenl1 { width:3.56rem; height:2.14rem; border:1px solid #e3e3e3; margin-bottom:0.12rem; background:url(../images/img01.jpg) no-repeat; background-size:100% 100%;}
+.fen_ty { width:3.56rem; height:1rem; border:1px solid #e3e3e3; margin-bottom:0.12rem;}
+.fenl2 { background:url(../images/img02.jpg) no-repeat; background-size:100% 100%;}
+.fenl3 { background:url(../images/img03.jpg) no-repeat; background-size:100% 100%;}
+.fenl4 { background:url(../images/img04.jpg) no-repeat; background-size:100% 100%;}
+.fenl5 { background:url(../images/img05.jpg) no-repeat; background-size:100% 100%;}
+.fenl6 { background:url(../images/img06.jpg) no-repeat; background-size:100% 100%;}
+.fenl7 { background:url(../images/img07.jpg) no-repeat; background-size:100% 100%;}
+.fenl1 a.btn_qgg { display:block; width:0.72rem; height:0.32rem; background:#e71419; font-size:0.18rem; color:#fff; margin:0.5rem 0 0 0.2rem; text-align:center; line-height:0.3rem; border-radius:0.1rem; -moz-border-radius:0.1rem; }
+
+.love { margin-top:0.1rem;}
+.love h2 { width:100%; height:0.52rem; background:#e71419; font-size:0.3rem; line-height:0.52rem; color:#fff; text-align:center; letter-spacing:0.3em; }
+.love ul { margin:0.1rem 0 0 0.08rem;}
+.love ul li { display:block; float:left; width:2.42rem; height:4.3rem; margin-right:0.04rem;}
+.love ul li dl dt { font-size:0.16rem; color:#000; line-height:1.6em;width:2.42rem; white-space:nowrap;overflow:hidden; text-overflow:ellipsis;}
+.love ul li dl dd { font-size:0.18rem; color:#e71419;}
+.love ul li dl dd span { color:#999;}
+
+.copr { width:100%; height:1.8rem; background:#efefef; }
+.copr ul { display:block; font-size:0.2rem; margin:0 auto; padding-top:0.2rem; text-align:center;}
+.copr ul li { display:inline; font-size:0.2rem; line-height:1em; border-right:1px solid #666; padding:0 0.1rem; letter-spacing:0.3em; color:#333; }
+.copr ul li a {line-height:1.5em;}
+.copr ul li.nobor { border:none; }
+.copr ul li:hover { color:#e7141a;}
+.copr p { font-size:0.16rem; color:#666; text-align:center; padding-top:0.12rem; line-height:1.3em; }
+
+.nav { width:100%; height:0.6rem; position:fixed; left:0; bottom:0; z-index:99; background:#f0f0f0; border:1px solid #d5d5d5;}
+.nav ul { width:100%; margin:0; background:#f0f0f0;}
+.nav ul li { float:left; height:0.6rem; line-height:0.6rem; font-size:0.2rem; border-right:0.5% solid #d5d5d5; letter-spacing:0.3em;}
+.nav ul li img { width:0.6rem; height:0.6rem; display:block; float:left;}
+.nav ul li:hover { background:#e71419; color:#fff; }
+.nav ul li:hover a { color:#fff;}
+.nav ul li.nav01 { width:1.89rem; padding-left:0.6rem;}
+.nav ul li.nav02 { width:2.2rem; padding-left:0.3rem;}
+.nav ul li.nav03 { width:2.16rem; padding-left:0.3rem; border:none;}
+.icon { position:relative; }
+.icon span.icon2 { position:absolute; left:0; display:none;}
+.nav ul li:hover .icon span.icon2 { display:block;}
+
+
+
+/*******列表*******/
+#menu{width:100%; overflow:hidden; position:relative; height:9.4rem; }
+#menu #nav {display:block;width:1.8rem; padding:0;margin:0;list-style:none; position:absolute; z-index:1; top:0; background:#efefef; padding-top:0.2rem;    overflow: hidden;}
+#menu #nav li { width:1.8rem; font-size:0.18rem; }
+#menu #nav li a 
+{display:block; 
+width:1.8rem; 
+line-height:0.8rem;
+ height:0.8rem; 
+ text-decoration:none;
+ padding-left:0.3rem; 
+ color:#333;
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;}
+
+#menu_con{ width:5.5rem; border-top:none; font-size:0.16rem; position:absolute; z-index:1;left:2rem; top:0; background:#fff;height:8rem; }
+.tag{  overflow:hidden;}
+.selected{background:url(../images/hover_bg.jpg) no-repeat; background-size:100% 100%; color:#e7141a;}
+#menu #nav li a.selected { color:#ef3470;}
+  
+.tag ul { margin-top:0.3rem;}
+.tag ul li { display:block; float:left; width:2.42rem; height:4.46rem; margin-right:0.3rem;}
+.tag ul li dl { padding:0.1rem 0;}
+.tag ul li dl dt { font-size:0.16rem; color:#000; line-height:1.6em; text-align:center; width:2.42rem; white-space:nowrap;overflow:hidden; text-overflow:ellipsis;}
+.tag ul li dl dd { font-size:0.18rem; color:#e71419;text-align:center;}
+.tag ul li dl dd span { color:#999;}
