@@ -913,7 +913,7 @@ var x = setInterval(function() {
                                 <!--Table body-->
                                 <tbody>
                                     @foreach ($collectionaddress as $itemaddress)
-                                            <tr data-contact="{{@$itemaddress->contact_person}}" data-phone="{{@$itemaddress->phone}}" data-address="{{@$itemaddress->address}}" data-province="{{@$itemaddress->province}}" data-city="{{@$itemaddress->city}}" data-subdistrict="{{@$itemaddress->subdistrict}}" data-postal="{{@$itemaddress->zip_code}}" data-email="{{@$itemaddress->email}}">
+                                            <tr data-contact="{{@$itemaddress->contact_person}}" data-phone="{{@$itemaddress->phone}}" data-addressdetail="{{@$itemaddress->address}}" data-province="{{@$itemaddress->province}}" data-city="{{@$itemaddress->city}}" data-subdistrict="{{@$itemaddress->subdistrict}}" data-postal="{{@$itemaddress->zip_code}}" data-email="{{@$itemaddress->email}}">
                                             <th scope="row">
                                             <input class="form-check-input" type="radio" id="choiceAddress" name="address" value="{{@$itemaddress->id}}">
                                             <label class="form-check-label" for="checkbox1" class="label-table"></label>
@@ -1011,13 +1011,7 @@ var x = setInterval(function() {
                             </div>
                         </div>
                     </div>
-                    <div class="bdbox">
-                        <label for="address" class="bdxx"><em>*</em>Alamat</label>
-                        <div class="textbox">
-                            <input name="userAddress" id="userAddress" datatype="*" type="text" required="required"
-                                placeholder="Silakan isi alamat lengkapnya">
-                        </div>
-                    </div>
+                    
                     <div class="bdbox">
                         <label for="payname" class="bdxx"><em>*</em>Kode Pos</label>
                         <div class="textbox">
@@ -1037,6 +1031,13 @@ var x = setInterval(function() {
 								-->
                         </div>
                     </div> --}}
+                </div>
+                <div class="bdbox">
+                    <label for="address" class="bdxx"><em>*</em>Alamat</label>
+                    <div class="textbox">
+                        <input name="userAddress" id="userAddress" datatype="*" type="text" required="required"
+                            placeholder="Silakan isi alamat lengkapnya">
+                    </div>
                 </div>
                     <div class="bdbox">
                         <label class="bdxx"><em>*</em>Pilih Kurir</label>
@@ -1158,7 +1159,7 @@ var x = setInterval(function() {
                 if (radioApple.length != 1) {
                 
                 //const choiceAddress = $('#choiceAddress:checked');
-                const choiceAddress = $("input[name='address']:checked");;
+                const choiceAddress = $("input[name='address']:checked");
                 if(!choiceAddress.length){
                     alert("Mohon Pilih Akun Address Anda!");
                     isShow = false;
@@ -1167,14 +1168,16 @@ var x = setInterval(function() {
                     else{
                         if(choiceAddress.val()=='NewAdd')
                         {
-                            //alert('new address');
+                            
+                                $("#addressinput").show();
+                            
                         }
                         else{
                         $(".bdbox.box-save-address").hide();
-                        $("#addressinput").hide();
+                        //$("#addressinput").hide();
                         let contact = $(".table-wrapper tbody tr").data('contact'),
                             phone = $(".table-wrapper tbody tr").data('phone'),
-                            address = $(".table-wrapper tbody tr").data('address'),
+                            address = $(".table-wrapper tbody tr").data('addressdetail'),
                             province = $(".table-wrapper tbody tr").data('province'),
                             city = $(".table-wrapper tbody tr").data('city'),
                             subdistrict = $(".table-wrapper tbody tr").data('subdistrict'),

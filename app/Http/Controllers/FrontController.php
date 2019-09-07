@@ -221,7 +221,12 @@ class FrontController extends Controller
     }
     public function submitDonation(Request $request)
     {
-        $validator = \Validator::make(request()->all(), [
+        return [ 
+            'status'  => 'error',
+            'message' => 'Transaksi Paid Now Belum Dapat Digunakan Mohon Gunakan Pilihan Transaksi Lain'
+          ];
+          
+          $validator = \Validator::make(request()->all(), [
             'courierPacketVal'      => 'required',
             'customer_name'         => 'required',
             'customer_phone'        => 'required',
