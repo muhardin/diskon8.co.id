@@ -1158,9 +1158,13 @@ function submitForm() {
         quantityBuy: $('#quantityBuy').val(),
         
         subdistrictID: $('#subdistrictID').val(),
+        subdistrictIDText: $('#subdistrictID option:selected').text()
+        
         cityID: $('#cityID').val(),
-
+        cityIDText: $('#cityID option:selected').text(),
+        
         provinceID: $('#provinceID').val(),
+        provinceIDText: $('#provinceID option:selected').text(),
 
         paidID: $('#paidID').val(),
     },
@@ -1208,9 +1212,13 @@ function submitForm() {
                 quantityBuy: $('#quantityBuy').val(),
                 
                 subdistrictID: $('#subdistrictID').val(),
+                subdistrictIDText: $('#subdistrictID option:selected').text(),
+
                 cityID: $('#cityID').val(),
+                cityIDText: $('#cityID option:selected').text(),
 
                 provinceID: $('#provinceID').val(),
+                provinceIDText: $('#provinceID option:selected').text(),
 
                 paidID: $('#paidID').val(),
             },

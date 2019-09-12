@@ -40,13 +40,13 @@
                             <div class="col-3">
                                 <strong>Nama</strong>
                             </div>
-                            <div class="col-9"> : {{@$orderdetail->ordered_by}}</div>
+                            <div class="col-9"> : {{@$orderdetail->contact_person}}</div>
                         </div>
                         <div class="form-row mb-3">
                             <div class="col-3">
                                 <strong>Email</strong>
                             </div>
-                            <div class="col-9"> : {{@$orderdetail->user_email}}</div>
+                            <div class="col-9"> : {{@$orderdetail->order_email}}</div>
                         </div>
                         <div class="form-row mb-3">
                             <div class="col-3">
@@ -106,7 +106,7 @@
                                             Item
                                         </div>
                                         <div class="col-md-3">
-                                            QTY
+                                            QTY | Price
                                         </div>
                                         <div class="col-md-3">
                                             <span class="price">Price</span>
@@ -128,10 +128,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 m-auto">
-                                        <span class="price"> {{$itemcart->quantity}} </span>
+                                        <span class="price"> {{$itemcart->quantity." @ ".number_format($itemcart->price*$itemcart->quantity,0)}} </span>
                                     </div>
                                     <div class="col-md-3 m-auto">
-                                        <span class="price">{{"Rp. ".number_format($itemcart->amount*$itemcart->quantity,0)}}</span>
+                                        <span class="price">{{"Rp. ".number_format($itemcart->price*$itemcart->quantity,0)}}</span>
                                     </div>
                                 </div>
                                 @endforeach

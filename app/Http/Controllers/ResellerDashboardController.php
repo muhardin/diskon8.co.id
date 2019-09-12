@@ -10,6 +10,7 @@ class ResellerDashboardController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('AuthAdmin');
     }
     /**
      * Display a listing of the resource.

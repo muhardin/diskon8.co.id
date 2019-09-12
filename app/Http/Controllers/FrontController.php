@@ -122,13 +122,19 @@ class FrontController extends Controller
     }
     public function getCost(Request $request){
 
+        $qtyOrder = $request->qtyOrder;
+        if($qtyOrder > 3){
+            $weight = $request->weightOrder + 1000;
+        }else{
+            $weight = $request->weightOrder;
+        }
         $params["courier"]      = $request->courirDT;
         $params['origin']       = '673';
         $params['originType']   = 'subdistrict';
         $params['destination']  = $request->destination;
-
+        
         $params['destinationType'] = 'subdistrict';
-        $params['weight'] = 1000;
+        $params['weight'] = $weight;
 
         $cost = $this->rajaOngkir->cost($params);
 
@@ -221,23 +227,21 @@ class FrontController extends Controller
     }
     public function submitDonation(Request $request)
     {
-        return [ 
+        /*return [ 
             'status'  => 'error',
             'message' => 'Transaksi Paid Now Belum Dapat Digunakan Mohon Gunakan Pilihan Transaksi Lain'
-          ];
-          
+          ];*/
           $validator = \Validator::make(request()->all(), [
-            'courierPacketVal'      => 'required',
+            'akun_order'            => 'required',
             'customer_name'         => 'required',
             'customer_phone'        => 'required',
-            //'donation_type'         => 'required',
             'customer_email'        => 'required|email',
             'amount'                => 'required|numeric',
             'customer_address'      => 'required',
             'customer_postalcode'   => 'required',
             'ongkir'                => 'required',
-            //'idProduct'             => 'required',
-            
+            'paidID'                => 'required',
+            'courierPacketVal'      => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -246,81 +250,8 @@ class FrontController extends Controller
               'message' => $validator->errors()->first()
             ];
         }
+
         
-        $useraddress = New UserAddress();
-            $useraddress->user_id         = 2;
-            $useraddress->order_id        = 190;
-            $useraddress->title           = 'Alamat utama';
-            $useraddress->address         = $this->request->customer_address;
-            $useraddress->city            = $request->cityID;
-            $useraddress->province        = $request->provinceID;
-            $useraddress->subdistrict     = $request->subdistrictID;
-            $useraddress->zip_code        = $request->customer_postalcode;
-            $useraddress->contact_person  = $request->customer_name;
-            $useraddress->phone           = $request->customer_phone;
-        $useraddress->save();
-
-        //insert order 
-        $orderID = DB::table('orders')->insertGetId([
-            'product_id'     => $request->idProduct,
-            'shop_id'        => $this->dataShop->id,
-            'user_id'        => 2,
-            'reseller_id'    => $this->dataShop->user_id,
-            'quantity'       => $request->quantityBuy,
-            'amount'         => $request->amount,
-            'invoice_number' => "INV".rand(11111,99999),
-            'order_status'   => 'pending',
-            'created_at'     => date('Y-m-d H:i:s'),
-            'updated_at'     => date('Y-m-d H:i:s'),
-        ]);
-        
-        /*$productshop = DB::table('shop_products')->where('shop_id',$this->dataShop->id)->where('product_id',$request->idProduct)->first();
-
-        DB::table('order_details')->insert([
-            'order_id'      => $orderID,
-            'product_id'    => $request->idProduct,
-            'name'          => 'Product',
-            'order_type'    => 'product',
-            'amount'        => $request->amount,
-            'quantity'      => $request->quantityBuy,
-            'profit'        => $productshop->profit,
-            'order_status'  => 'pending',
-            'created_at'    => date('Y-m-d H:i:s'),
-            'updated_at'    => date('Y-m-d H:i:s'),
-        ]);*/
-        //dd($request->userName);
-        
-        $productshop = DB::table('shop_products')->where('shop_id',$this->dataShop->id)->where('product_id',$request->idProduct)->first();
-        $productshop = DB::table('shop_products')->where('shop_id',$this->dataShop->id)->where('product_id',$request->idProduct)->first();
-
-        $productshopDt = DB::table('products')->where('id',$request->idProduct)->first();
-                $deviceid   = $_SERVER['HTTP_USER_AGENT']."-".$_SERVER['REMOTE_ADDR'];
-                $ordercart  = DB::table('order_carts')
-                                    ->select('order_carts.amount as agent_price','order_carts.*', 'products.name', 'products.name', 'products.slug', 'products.brand', 'products.discount', 'products.main_image', 'products.status')
-                                    ->leftJoin('products', 'order_carts.product_id', '=', 'products.id')
-                                    //->where('products.id', $id)
-                                    ->where('order_carts.shop_id', $this->dataShop->id)
-                                    ->where('order_carts.status', 0)
-                                    ->where('order_carts.device', $deviceid)
-                                    ->get();
-                foreach ($ordercart as $ordercartdt) {
-                    DB::table('order_details')->insert([
-                        'order_id'      => $orderID,
-                        'product_id'    => $ordercartdt->product_id,
-                        'name'          => 'Product',
-                        'order_type'    => 'product',
-                        'amount'        => $ordercartdt->amount,
-                        'price'         => $ordercartdt->price,
-                        'quantity'      => $ordercartdt->quantity,
-                        'profit'        => $ordercartdt->profit,
-                        'order_status'  => 'pending',
-                        'created_at'    => date('Y-m-d H:i:s'),
-                    ]);
-                    DB::table('order_carts')->where('id',$ordercartdt->id)->update([
-                        'status'=>1,
-                    ]);
-                }
-
         
         \DB::transaction(function(){
             // Save donasi ke database
@@ -331,34 +262,154 @@ class FrontController extends Controller
             $donation->amount = floatval($this->request->amount);
             $donation->note         = $this->request->note;
             $donation->save();*/
-
-            $donation = Donation::create([
-                /*'donor_name'      => $this->request->donor_name,
-                'donor_email'       => $this->request->donor_email,
-                'donation_type'     => @$this->request->donation_type,
-                'amount'            => floatval($this->request->amount),
-                'note'              => $this->request->note, */
-
+            if($this->request->akun_order=='Guest'){
+                $userId=2;
+            }elseif($this->request->akun_order=='NewMember'){
+                $dtuser                 = New User();
+                $dtuser->name           = $this->request->customer_name;
+                $dtuser->email          = $this->request->customer_address;
+                $dtuser->password       = Hash::make('user321');
+                $dtuser->user_type      = 'Customer';
+                $dtuser->status         = 'active';
+                $userId =$dtuser->id;
+                $email                  = $this->request->customer_email;
+                
+                $mail                   = array();
+                $mail['name']           = @$this->request->customer_name;
+                $mail['email']          = $this->request->customer_email;
+                $mail['phone']          = $this->request->customer_phone;
+    
+                        $date           = \Carbon\Carbon::now();
+                        $newdate        = $date->setTimezone('Asia/Jakarta');
+                        $ndate          = \Carbon\Carbon::parse($newdate);
+                        $newdatelast    = $ndate->format('d M Y H:i:s');
+    
+                $mail['datetime']       = @$newdatelast;
+                Mail::send('email.newuser', $mail, function($message) use ($email)
+                {
+                    $message->from("no-reply@ultimate246.com", @$this->dataShop->company_name);
+                    $message->subject("Information | New User");
+                    $message->to($email);
+                }); 
+    
+            }else{
+                if($this->request->akun_order=='NewAdd')
+                {
+                    $userId=Auth::user()->id;
+                }else{
+                    $userId=Auth::user()->id;
+                
+                }
+            }
+    
+            if($this->request->akun_order=='Guest' or $this->request->akun_order=='NewMember' or $this->request->akun_order=='NewAdd'){
+                $useraddress = New UserAddress();
+                $useraddress->user_id           = $userId;
+                $useraddress->order_id          = 190;
+                $useraddress->title             = 'Alamat utama';
+                $useraddress->address           = $this->request->customer_address;
+                $useraddress->city              = $this->request->cityID;
+                $useraddress->city_name         = $this->request->cityIDText;
+                $useraddress->province          = $this->request->provinceID;
+                $useraddress->province_name     = $this->request->provinceIDText;
+                $useraddress->subdistrict       = $this->request->subdistrictID;
+                $useraddress->subdistrict_name  = $this->request->subdistrictIDText;
+                $useraddress->zip_code          = $this->request->customer_postalcode;
+                $useraddress->contact_person    = $this->request->customer_name;
+                $useraddress->phone             = $this->request->customer_phone;
+                $useraddress->email             = $this->request->customer_email;
+                $useraddress->save();
+                $addressid = $useraddress->id;
+            }else{
+                $addressid = $this->request->akun_order;
+            }
+            
+    
+            //insert order 
+            $invoiceno = "INV".rand(11111,99999);
+            $orderID = DB::table('orders')->insertGetId([
+                //'product_id'     => $request->idProduct,
+                'shop_id'        => $this->dataShop->id,
+                'address_id'     => $addressid,
+                'user_id'        => $userId,
+                'reseller_id'    => $this->dataShop->user_id,
+                'payment_method' => $this->request->paidID,
+                'quantity'       => $this->request->quantityBuy,
+                'amount'         => $this->request->amount,
+    
+                'shipping_method'   => $this->request->courierID,
+                'shipping_package'  => $this->request->courierPacket,
+                'shipping_price'    => $this->request->ongkir,
+    
+                'invoice_number' => $invoiceno,
+                'order_status'   => 'pending',
+                'created_at'     => date('Y-m-d H:i:s'),
+                'updated_at'     => date('Y-m-d H:i:s'),
+            ]);
+            
+            $productshop = DB::table('shop_products')->where('shop_id',$this->dataShop->id)->where('product_id',$this->request->idProduct)->first();
+            $productshopDt = DB::table('products')->where('id',$this->request->idProduct)->first();
+    
+            $deviceid   = $_SERVER['HTTP_USER_AGENT']."-".$_SERVER['REMOTE_ADDR'];
+            
+            $ordercart  = DB::table('order_carts')
+                                ->select('order_carts.amount as agent_price','order_carts.*', 'products.name', 'products.name', 'products.slug', 'products.brand', 'products.discount', 'products.main_image', 'products.status')
+                                ->leftJoin('products', 'order_carts.product_id', '=', 'products.id')
+                                //->where('products.id', $id)
+                                ->where('order_carts.shop_id', $this->dataShop->id)
+                                ->where('order_carts.status', 0)
+                                ->where('order_carts.device', $deviceid)
+                                ->get();
+            foreach ($ordercart as $ordercartdt) {
+                DB::table('order_details')->insert([
+                    'order_id'      => $orderID,
+                    'product_id'    => $ordercartdt->product_id,
+                    'name'          => 'Product',
+                    'order_type'    => 'product',
+                    'amount'        => $ordercartdt->amount,
+                    'price'         => $ordercartdt->price,
+                    'quantity'      => $ordercartdt->quantity,
+                    'profit'        => $ordercartdt->profit*$ordercartdt->quantity,
+                    'order_status'  => 'pending',
+                    'created_at'    => date('Y-m-d H:i:s'),
+                ]);
+    
+                DB::table('order_carts')->where('id',$ordercartdt->id)->update([
+                    'status'=>1,
+                ]);
+            }
+            
+            
+            //dd($request->userName);
+            $detailProduct = DB::table('order_details')
+                            ->leftjoin('products','products.id','=','order_details.product_id')
+                            ->select('order_details.*','products.name','products.sku')
+                            ->where('order_details.order_id',$orderID)
+                            ->get();
+                        
+                            
+            /*$donation = Donation::create([
                 'donor_name'     => $this->request->customer_name,
                 'donor_email'    => $this->request->customer_email,
                 'donation_type'  => $this->request->donation_type,
                 'amount'         => $this->request->amount,
                 'note'           => @$this->request->note,
 
-            ]);
-
+            ]);*/
+            
+            $dbaddress = DB::table('user_addresses')->where('id',$addressid)->first();
             // Buat transaksi ke midtrans kemudian save snap tokennya.
             $payload = [
                 'transaction_details' => [
-                    'order_id'      => $donation->id,
-                    'gross_amount'  => $donation->amount,
+                    'order_id'      => $orderID,
+                    'gross_amount'  => $this->request->amount,
                 ],
                 'customer_details' => [
-                    'first_name'    => $donation->donor_name,
-                    'email'         => $donation->donor_email,
-                    // 'phone'         => '08888888888',
-                    // 'address'       => '',
-                ],
+                    'first_name'    => $dbaddress->contact_person,
+                    'email'         => $dbaddress->email,
+                    'phone'         => $dbaddress->phone,
+                    'address'       => $dbaddress->address,
+                ],/*
                 'item_details' => [
                     [
                         'id'       => $donation->donation_type,
@@ -366,7 +417,7 @@ class FrontController extends Controller
                         'quantity' => 1,
                         'name'     => ucwords(str_replace('_', ' ', 'test'))
                     ]
-                ]
+                ]*/
             ];
             $snapToken = Veritrans_Snap::getSnapToken($payload);
             $donation->snap_token = $snapToken;
@@ -391,7 +442,6 @@ class FrontController extends Controller
           $donation         = Donation::findOrFail($orderId);
 
           if ($transaction == 'capture') {
-
             // For credit card transaction, we need to check whether transaction is challenge by FDS or not
             if ($type == 'credit_card') {
 
@@ -444,9 +494,21 @@ class FrontController extends Controller
 
         return;
     }
-    public function paid()
+    public function paid(Request $request)
     {
-        //
+        $notif = new Veritrans_Notification();
+        \DB::transaction(function() use($notif) {
+
+          $transaction      = $notif->transaction_status;
+          $type             = $notif->payment_type;
+          $orderId          = $notif->order_id;
+          $fraud            = $notif->fraud_status;
+
+          $donation         = Donation::findOrFail($orderId);
+
+          return redirect('/item/'.@$donation->snap_token)->with('success','Berhasil');
+
+        });
     }
     public function success()
     {
@@ -457,7 +519,7 @@ class FrontController extends Controller
     {
         /*return [ 
             'status'  => 'error',
-            'message' => $request->akun_order
+            'message' => $request->subdistrictIDText
           ];*/
           
         $validator = \Validator::make(request()->all(), [
@@ -490,20 +552,20 @@ class FrontController extends Controller
             $dtuser->password       = Hash::make('user321');
             $dtuser->user_type      = 'Customer';
             $dtuser->status         = 'active';
-            
             $userId =$dtuser->id;
-
-            $email                      = $request->customer_email;
+            $email                  = $request->customer_email;
             
-            $mail                       = array();
-            $mail['name']               = @$request->customer_name;
-            $mail['email']              = $request->customer_email;
-            $mail['phone']              = $request->customer_phone;
-                            $date           = \Carbon\Carbon::now();
-                            $newdate        = $date->setTimezone('Asia/Jakarta');
-                            $ndate          = \Carbon\Carbon::parse($newdate);
-                            $newdatelast    = $ndate->format('d M Y H:i:s');
-            $mail['datetime']             = @$newdatelast;
+            $mail                   = array();
+            $mail['name']           = @$request->customer_name;
+            $mail['email']          = $request->customer_email;
+            $mail['phone']          = $request->customer_phone;
+
+                    $date           = \Carbon\Carbon::now();
+                    $newdate        = $date->setTimezone('Asia/Jakarta');
+                    $ndate          = \Carbon\Carbon::parse($newdate);
+                    $newdatelast    = $ndate->format('d M Y H:i:s');
+
+            $mail['datetime']       = @$newdatelast;
             Mail::send('email.newuser', $mail, function($message) use ($email)
             {
                 $message->from("no-reply@ultimate246.com", @$this->dataShop->company_name);
@@ -523,19 +585,21 @@ class FrontController extends Controller
 
         if($request->akun_order=='Guest' or $request->akun_order=='NewMember' or $request->akun_order=='NewAdd'){
             $useraddress = New UserAddress();
-            $useraddress->user_id         = $userId;
-            $useraddress->order_id        = 190;
-            $useraddress->title           = 'Alamat utama';
-            $useraddress->address         = $this->request->customer_address;
-            $useraddress->city            = $request->cityID;
-            $useraddress->province        = $request->provinceID;
-            $useraddress->subdistrict     = $request->subdistrictID;
-            $useraddress->zip_code        = $request->customer_postalcode;
-            $useraddress->contact_person  = $request->customer_name;
-            $useraddress->phone           = $request->customer_phone;
-            $useraddress->email           = $request->customer_email;
+            $useraddress->user_id           = $userId;
+            $useraddress->order_id          = 190;
+            $useraddress->title             = 'Alamat utama';
+            $useraddress->address           = $this->request->customer_address;
+            $useraddress->city              = $request->cityID;
+            $useraddress->city_name         = $request->cityIDText;
+            $useraddress->province          = $request->provinceID;
+            $useraddress->province_name     = $request->provinceIDText;
+            $useraddress->subdistrict       = $request->subdistrictID;
+            $useraddress->subdistrict_name  = $request->subdistrictIDText;
+            $useraddress->zip_code          = $request->customer_postalcode;
+            $useraddress->contact_person    = $request->customer_name;
+            $useraddress->phone             = $request->customer_phone;
+            $useraddress->email             = $request->customer_email;
             $useraddress->save();
-
             $addressid = $useraddress->id;
         }else{
             $addressid = $request->akun_order;
@@ -543,6 +607,7 @@ class FrontController extends Controller
         
 
         //insert order 
+        $invoiceno = "INV".rand(11111,99999);
         $orderID = DB::table('orders')->insertGetId([
             //'product_id'     => $request->idProduct,
             'shop_id'        => $this->dataShop->id,
@@ -557,7 +622,7 @@ class FrontController extends Controller
             'shipping_package'  => $request->courierPacket,
             'shipping_price'    => $request->ongkir,
 
-            'invoice_number' => "INV".rand(11111,99999),
+            'invoice_number' => $invoiceno,
             'order_status'   => 'pending',
             'created_at'     => date('Y-m-d H:i:s'),
             'updated_at'     => date('Y-m-d H:i:s'),
@@ -585,10 +650,11 @@ class FrontController extends Controller
                 'amount'        => $ordercartdt->amount,
                 'price'         => $ordercartdt->price,
                 'quantity'      => $ordercartdt->quantity,
-                'profit'        => $ordercartdt->profit,
+                'profit'        => $ordercartdt->profit*$ordercartdt->quantity,
                 'order_status'  => 'pending',
                 'created_at'    => date('Y-m-d H:i:s'),
             ]);
+
             DB::table('order_carts')->where('id',$ordercartdt->id)->update([
                 'status'=>1,
             ]);
@@ -602,22 +668,23 @@ class FrontController extends Controller
                         ->where('order_details.order_id',$orderID)
                         ->get();
        
-        $email                      = $request->customer_email;
-        
+        $email          = $request->customer_email;
+        $emailreseller  = $this->dataShop->email;
         $mail                       = array();
         $mail['name']               = @$request->customer_name;
         $mail['email']              = $request->customer_email;
         $mail['amount']             = $detailProduct->sum('amount')+$request->ongkir;
         $mail['phone']              = $request->customer_phone;
-
+        $mail['resellername']       = @$this->dataShop->company_name;
         $mail['productData']        = $detailProduct;
         $mail['ongkir']             = $request->ongkir;
         $mail['caraBayar']          = $request->paidID;
+        $mail['invocieno']          = $invoiceno;
                         $date           = \Carbon\Carbon::now();
                         $newdate        = $date->setTimezone('Asia/Jakarta');
                         $ndate          = \Carbon\Carbon::parse($newdate);
                         $newdatelast    = $ndate->format('d M Y H:i:s');
-        $mail['datetime']             = @$newdatelast;
+        $mail['datetime']               = @$newdatelast;
         
         $mail['shopname']    = @$this->dataShop->company_name;
         $mail['phoneShop']   = @$this->dataShop->phone;
@@ -630,7 +697,8 @@ class FrontController extends Controller
                 $message->from("no-reply@ultimate246.com", @$this->dataShop->company_name);
                 $message->subject("Information | New Order");
                 $message->to($email);
-            }); 
+            });
+            $mailform = 'successnoticereseller';
         }else{
             Mail::send('email.success', $mail, function($message) use ($email)
             {
@@ -638,7 +706,18 @@ class FrontController extends Controller
                 $message->subject("Information | New Order");
                 $message->to($email);
             }); 
+            $mailform = 'successcodreseller';
         }
+
+        //send to reseller
+        
+        Mail::send('email.'.$mailform, $mail, function($message) use ($emailreseller)
+        {
+            $message->from('no-reply@ultimate246.com', @$this->dataShop->company_name);
+            $message->subject("Information | New Order");
+            $message->to($emailreseller);
+        });
+
 
         // Buat transaksi ke midtrans kemudian save snap tokennya.
         if($request->paidID=='now'){
@@ -720,8 +799,9 @@ class FrontController extends Controller
             $productcartupdate = DB::table('order_carts')
                                 ->where('id',$productcart->id)
                                 ->update([
-                                    'quantity'  =>$productcart->quantity + $request->quantityBuy,
-                                    'amount'    =>$productcart->amount + ($request->startPrice*$request->quantityBuy)
+                                    'quantity'      =>$productcart->quantity + $request->quantityBuy,
+                                    'weight_amount' =>$productcart->weight_amount + ($productshopDt->weight * $request->quantityBuy),
+                                    'amount'        =>$productcart->amount + ($request->startPrice*$request->quantityBuy)
                                 ]);
         }
         else{
@@ -735,6 +815,8 @@ class FrontController extends Controller
                 'quantity'      => $request->quantityBuy,
                 'profit'        => $productshop->profit,
                 'order_status'  => 'pending',
+                'weight'        =>$productshopDt->weight,
+                'weight_amount' =>$productshopDt->weight * $request->quantityBuy,
                 'created_at'    => date('Y-m-d H:i:s'),
                 'device'    => $deviceid,
             ]);

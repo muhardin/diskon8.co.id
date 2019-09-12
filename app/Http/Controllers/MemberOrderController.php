@@ -129,7 +129,7 @@ class MemberOrderController extends Controller
     public function detail($id=null)
     {
         $data['ordactive']   ='active';
-        $data['orderdetail'] = Order::select('orders.*', 'products.name as product_name','products.main_image', 'users.name as ordered_by','users.email as user_email','shops.phone as phone','shops.company_name as company_name','shops.email as email','user_addresses.phone as address_phone','user_addresses.address as address_tujuan','user_addresses.zip_code as zip_address')
+        $data['orderdetail'] = Order::select('orders.*', 'products.name as product_name','products.main_image', 'users.name as ordered_by','users.email as user_email','shops.phone as phone','shops.company_name as company_name','shops.email as email','user_addresses.email as order_email','user_addresses.contact_person','user_addresses.phone as address_phone','user_addresses.address as address_tujuan','user_addresses.zip_code as zip_address')
                                 //->where('order_status', 'pending')
                                 ->where('orders.id', @$id)
                                 ->where('orders.reseller_id', @Auth::user()->id)
@@ -140,7 +140,7 @@ class MemberOrderController extends Controller
                                 ->first();
         //dd($confirms);
         if(!$data['orderdetail']){
-            return redirect()->back();
+            return redirect()->back(); 
         }
         $data['profit']     = DB::table('order_details')->where('order_id',$id)->sum('profit');
         $data['dataitem']   = DB::table('order_details')

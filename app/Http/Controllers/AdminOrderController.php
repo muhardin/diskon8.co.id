@@ -12,6 +12,7 @@ class AdminOrderController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('AuthAdmin');
     }
 
     public function index()

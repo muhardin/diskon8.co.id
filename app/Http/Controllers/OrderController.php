@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Order;
 use Illuminate\Http\Request;
 use App\RajaOngkir;
+
 use DB;
 
 class OrderController extends Controller
 {
     public function __construct()
     {
+        $this->middleware('AuthAdmin');
         $this->middleware('auth');
         $this->rajaOngkir = new RajaOngkir;
     }
@@ -278,15 +280,17 @@ class OrderController extends Controller
     }
     public function detail($id=null)
     {
-        $data['orderdetail'] = Order::select('orders.*', 'products.name as product_name','products.main_image','user_addresses.phone as address_phone','user_addresses.address as address_tujuan','user_addresses.zip_code as zip_address','users.name as ordered_by','users.email as user_email','shops.phone as phone','shops.company_name as company_name','shops.email as email','shops.domain','shops.nama_pemilik')
+        $data['orderdetail'] = Order::select('orders.*','reseller_packages.title as reseller_package_name','products.name as product_name','order_details.product_id','products.main_image','user_addresses.city_name','user_addresses.subdistrict_name','user_addresses.province_name','user_addresses.phone as address_phone','user_addresses.email as address_email','user_addresses.address as address_tujuan','user_addresses.zip_code as zip_address','user_addresses.contact_person as order_name','users.name as ordered_by','users.email as user_email','shops.phone as phone','shops.company_name as company_name','shops.email as email','shops.domain','shops.nama_pemilik')
                                 //->where('order_status', 'pending')
                                 ->where('orders.id', @$id)
-                                ->leftJoin('products', 'products.id', '=', 'orders.product_id')
+                                ->leftJoin('order_details', 'order_details.order_id', '=', 'orders.id')
+                                ->leftJoin('products', 'products.id', '=', 'order_details.product_id')
                                 ->leftJoin('users', 'users.id', '=', 'orders.user_id')
                                 ->leftJoin('shops', 'shops.id', '=', 'orders.shop_id')
                                 ->leftJoin('user_addresses', 'user_addresses.id', '=', 'orders.address_id')
+                                ->leftJoin('reseller_packages', 'reseller_packages.id', '=', 'shops.reseller_package_id')
                                 ->first();
-                                $data['profit'] = DB::table('order_details')->where('order_id',$id)->sum('profit');
+        $data['profit'] = DB::table('order_details')->where('order_id',$id)->sum('profit');
         //dd($data['orderdetail']);
         return view('orders.orderdetail',$data);
     }

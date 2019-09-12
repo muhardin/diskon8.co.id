@@ -74,7 +74,8 @@
             </div>
             <div class="hpanel">
                 <div class="panel-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <!-- <form method="POST" action="{{ route('register') }}"> -->
+                    <form method="POST" action="#">
                         @csrf
                         <div class="row">
                             <div class="form-group col-lg-6">

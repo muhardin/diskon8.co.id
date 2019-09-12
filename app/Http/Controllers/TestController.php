@@ -15,7 +15,7 @@ class TestController extends Controller
      */
     public function index(Request $request)
     {
-      //dd($request->server->get('SERVER_NAME'));
+      dd($request->server->get('SERVER_NAME'));
       //Request::server ("HTTP_HOST");
                     $data = Shop::find(2);
                     $curl = curl_init();

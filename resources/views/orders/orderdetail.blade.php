@@ -42,23 +42,43 @@
                                         
                                         <div class="form-group-inner">
                                             <label>Nama</label>
-                                            <input value="{{$orderdetail->ordered_by}}" type="text" class="form-control" readonly/>
+                                            <input value="{{$orderdetail->order_name}}" type="text" class="form-control" readonly/>
                                         </div>
                                         <div class="form-group-inner">
                                             <label>Email</label>
-                                            <input value="{{$orderdetail->user_email}}" type="email" class="form-control" readonly/>
+                                            <input value="{{$orderdetail->address_email}}" type="email" class="form-control" readonly/>
                                         </div>
                                         <div class="form-group-inner">
                                             <label>Phone</label>
                                             <input value="{{$orderdetail->address_phone}}" type="text" class="form-control" readonly />
                                         </div>
                                         <div class="form-group-inner">
+                                            <label>Daerah :</label>
+                                            <p>{{@$orderdetail->province_name." - ".@$orderdetail->city_name." - ".@$orderdetail->subdistrict_name}}</p>
+                                        </div>
+                                        <div class="form-group-inner">
                                             <label>Tujuan :</label>
                                             <p>{{$orderdetail->address_tujuan}}</p>
                                         </div>
                                         <div class="form-group-inner">
+                                            <label>Shipping :</label>
+                                            <p>{{$orderdetail->shipping_method}}</p>
+                                        </div>
+                                        <div class="form-group-inner">
+                                            <label>Shipping Package :</label>
+                                            <p>{{$orderdetail->shipping_package}}</p>
+                                        </div>
+                                        <div class="form-group-inner">
                                             <label>Kode Pos :</label>
                                             <p>{{$orderdetail->zip_address}}</p>
+                                        </div>
+                                        <div class="form-group-inner">
+                                            <label>Ongkir :</label>
+                                            <p>{{"Rp. ".number_format($orderdetail->shipping_price,0,',','.')}}</p>
+                                        </div>
+                                        <div class="form-group-inner">
+                                            <label>Total :</label>
+                                            <p>{{"Rp. ".number_format($orderdetail->amount,0,',','.')}}</p>
                                         </div>
                                         
 
@@ -104,23 +124,30 @@
                                                             <tr>
                                                                 <th>#</th>
                                                                 <th>Item</th>
+                                                                <th>Name (SKU)</th>
                                                                 <th>Qty</th>
                                                                 <th>Price</th>
                                                                 <th>Profit Reseller</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            @php
+                                                                $detailitem = \DB::table('order_details')->select('products.*','order_details.quantity as order_quantity','order_details.price as order_price','order_details.amount as order_amount','order_details.profit')->leftjoin('products','products.id','=','order_details.product_id')->where('order_details.order_id',$orderdetail->id)->get()
+                                                            @endphp
+                                                        @foreach ($detailitem as $itemproduct)
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td>
-                                                                    <img src="{{asset('images/products/'.$orderdetail->main_image)}}" width="90">
-                                                                    {{$orderdetail->product_name}}
+                                                                    <img src="{{asset('images/products/'.$itemproduct->main_image)}}" width="90">
                                                                 </td>
-                                                                <td>{{$orderdetail->quantity}}</td>
-                                                                <td>{{"Rp. ".number_format($orderdetail->amount,0)}}</td>
-                                                                <td>@Facebook</td>
+                                                                <td>
+                                                                        {!! @$itemproduct->name." (<b>".@$itemproduct->sku."</b>) "!!}
+                                                                </td>
+                                                                <td>{{@$itemproduct->order_quantity}}</td>
+                                                                <td>{{number_format(@$itemproduct->order_price,0,',','.')}}</td>
+                                                                <td>{{number_format(@$itemproduct->profit,0,',','.')}}</td>
                                                             </tr>
-                                                            
+                                                            @endforeach
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -242,6 +269,10 @@
                                                                 <div class="form-group-inner">
                                                                     <label>Domain Toko Reseller</label>
                                                                     <input value="{{$orderdetail->domain}}" type="text" class="form-control" readonly/>
+                                                                </div>
+                                                                <div class="form-group-inner">
+                                                                    <label>Package Reseller</label>
+                                                                    <input value="{{@$orderdetail->reseller_package_name}}" type="text" class="form-control" readonly/>
                                                                 </div>
                                                                 <div class="form-group-inner">
                                                                     <label>Nama Toko Reseller</label>

@@ -96,7 +96,7 @@
                                         <td>
                                             @if (Auth::user()->user_type != 'finance')
                                               <button data-toggle="tooltip" title="WhatsApp" class="pd-setting-ed bg-green"><a target="_blank" href="https://web.whatsapp.com/send?phone=62{{substr($confirm->phone, 1)}}"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></button>
-                                              <button data-toggle="tooltip" title="Track" class="pd-setting-ed bg-pink"><a href="{{route('order.tracking')}}"><i class="fa fa-search" aria-hidden="true"></i></a></button>
+                                              <button onclick="location.href='{{url('order/detail/'.@$confirm->id)}}';" data-toggle="tooltip" title="Track" class="pd-setting-ed bg-pink"><i class="fa fa-search" aria-hidden="true"></i></button>
                                               <button data-toggle="tooltip" title="Konfirmasi" class="pd-setting-ed"><a href="{{url('/pembayaranDiterima/'.$confirm->id)}}"><i class="fa fa-check-circle" aria-hidden="true"></i></a></button>
                                             @endif
                                         </td>
@@ -229,7 +229,6 @@
                                     <th>Tanggal</th>
                                     <th>Invoice</th>
                                     <th>Nama</th>
-                                    <th>Produk</th>
                                     <th>Jumlah Pesanan</th>
                                     <th>Total Harga</th>
                                     <th>Status</th>
@@ -238,18 +237,21 @@
                                 </thead>
                                 <tbody>
                                 @foreach($success as $key => $scs)
+                                @php
+                                    $qtyorder = \DB::table('order_details')->where('order_id',$scs->id)->sum('quantity');
+                                @endphp
                                     <tr>
                                         <td>{{ $scs->created_at }}</td>
                                         <td>{{$scs->invoice_number}}</td>
                                         <td>{{ $scs->ordered_by }}</td>
-                                        <td>{{ $scs->product_name }}</td>
-                                        <td>{{ $scs->quantity }}</td>
+                                        
+                                        <td>{{ $qtyorder }}</td>
                                         <td>{{ $scs->amount }}</td>
                                         <td>{{ $scs->order_status}}</td>
                                         <td>
                                             @if (Auth::user()->user_type != 'finance')
                                               <button data-toggle="tooltip" title="WhatsApp" class="pd-setting-ed bg-green"><a target="_blank" href="https://web.whatsapp.com/send?phone=62{{substr($scs->phone, 1)}}"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></button>
-                                              <button data-toggle="tooltip" title="Track" class="pd-setting-ed bg-pink"><a href="{{route('order.tracking')}}"><i class="fa fa-search" aria-hidden="true"></i></a></button>
+                                              <button onclick="location.href='{{url('order/detail/'.@$scs->id)}}';" data-toggle="tooltip" title="Track" class="pd-setting-ed bg-pink"><i class="fa fa-search" aria-hidden="true"></i></button>
                                               {{--<button data-toggle="tooltip" title="Konfirmasi" class="pd-setting-ed"><a href=""><i class="fa fa-check-circle" aria-hidden="true"></i></a></button>--}}
                                               {{--<button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>--}}
                                             @endif

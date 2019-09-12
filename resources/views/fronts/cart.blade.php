@@ -744,6 +744,7 @@ var x = setInterval(function() {
                                     <th>Picture</th>
                                     <th>Price (Rp.)</th>
                                     <th>Qty</th>
+                                    {{-- <th>Berat(gr)</th> --}}
                                     <th>Amount (Rp.)</th>
                                     <th>Action</th>
                                   </tr>
@@ -755,6 +756,7 @@ var x = setInterval(function() {
                                             class="img-responsive"></td>
                                         <td>{{number_format(@$item->price,0)}}</td>
                                         <td>{{@$item->quantity}}</td>
+                                        {{-- <td>{{@$item->weight}}</td> --}}
                                         <td>{{number_format($item->amount,0)}}</td>
                                         <td>
                                         <a href="{{url('/cartdelete/'.$item->id)}}"><img
@@ -823,7 +825,6 @@ var x = setInterval(function() {
                         <li>
                             <h2>Silakan pilih akun order anda :</h2>
                             <div role="radiogroup" class="items">
-                                
                                 <!-- <a spec-id="0" href="javascript:;"
                                     data-img="http://yy.jiaoyoumao.com/dacuige/20190515/14563545093a8a.jpg"
                                     data-serial="S6354-1" data-key="Warna"
@@ -842,30 +843,28 @@ var x = setInterval(function() {
                                     data-value="new" data-chinese="黑色M"
                                     class="select-varian">New Member</a>
                                 -->
-                                
                                 <div class="radio-toolbar">
                                     <input class="" type="radio" id="radioFruit" name="choiceAccount" value="Guest">
                                     <label for="radioFruit">Guest</label>
                                     <input type="radio" id="radioBanana" name="choiceAccount" value="NewMember">
                                     <label for="radioBanana">New Member</label>
-
                                     <input type="radio" onclick="location.href='{{url('/login')}}';" id="radioOrange" name="radioFruit" value="banana">
                                     <label for="radioOrange">Login</label>
                                 
-                                    {{--<input type="radio" id="radioOrange" name="radioFruit" value="orange">
+                                    {{--
+                                        <input type="radio" id="radioOrange" name="radioFruit" value="orange">
                                         <a id="speck" href="{{url('/login')}}"><label for="radioOrange">Login</label>
-                                        </a> --}}
-                                        <div>Dengan mendaftar, saya menyetujui
-                                        <a href="{{url('/syaratdanketentuan')}}">Syarat dan Ketentuan</a> serta <a href="{{url('/kebijakanprivacy')}}">Kebijakan Privasi</a>  </div>
+                                        </a> 
+                                    --}}
+                                    <div>Dengan mendaftar, saya menyetujui
+                                        <a href="{{url('/syaratdanketentuan')}}">Syarat dan Ketentuan</a> serta <a href="{{url('/kebijakanprivacy')}}">Kebijakan Privasi</a> 
+                                    </div>
                                 </div>
                                 <p>&nbsp;</p>
                                 @else
                                 <div class="radio-toolbar">
-                                
                                 <input type="radio" id="radioApple" name="address" value="NewAdd">
                                 <label for="radioApple">New Address</label>
-                                
-                               
                                 <a id="speck" href="{{url('/logout')}}">Logout</a>
                             </div>
                                 @endif
@@ -1073,8 +1072,9 @@ var x = setInterval(function() {
                         <label class="bdxx">Total</label>
                         <input type="hidden" id="startPrice" value="{{$collectionsum}}">
                         <input type="hidden" id="total_money2" value="{{$collectionsum}}">
-                        
                         <input type="hidden" id="total_cost" value="0">
+                        <input type="hidden" id="quantity_all" value="{{@$collection->sum('quantity')}}">
+                        <input type="hidden" id="weight_all" value="{{@$collection->sum('weight_amount')}}">
                         
                         
                         <div class="text3box text-r"><span id="j_total" style="color: rgb(239, 53, 96);"></span><span
@@ -1106,7 +1106,11 @@ var x = setInterval(function() {
         </div>
     </form>
     </div>
-
+    <script type="text/javascript">
+        $(window).on('load',function(){
+          $(this).closest('.wsku-buy').removeClass('buy wsku-buy').addClass('buy sku-buy');
+        });
+    </script>
     <script>
         $(document).ready(function(){
             $('#bAddToCart').click(function(){
@@ -1152,6 +1156,7 @@ var x = setInterval(function() {
         });
             $('.widgets-cover-sku .wsku-buy').on('click', function() {
             var isShow = true;
+            
             if ($("#order").hasClass("show")) $(".sys_spec_text>li").each(function() {
                 
                 //const radioApple = $('#radioApple:checked');
@@ -1169,7 +1174,7 @@ var x = setInterval(function() {
                         if(choiceAddress.val()=='NewAdd')
                         {
                             
-                                $("#addressinput").show();
+                          $("#addressinput").show();
                             
                         }
                         else{
@@ -1369,11 +1374,17 @@ function submitForm() {
         quantityBuy: $('#quantityBuy').val(),
         
         subdistrictID: $('#subdistrictID').val(),
-        cityID: $('#cityID').val(),
+                subdistrictIDText: $('#subdistrictID option:selected').text(),
 
-        provinceID: $('#provinceID').val(),
+                cityID: $('#cityID').val(),
+                cityIDText: $('#cityID option:selected').text(),
+                
+
+                provinceID: $('#provinceID').val(),
+                provinceIDText: $('#provinceID option:selected').text(),
 
         paidID: $('#paidID').val(),
+        akun_order: akun_order,
     },
 
     function (data, status) {
@@ -1383,7 +1394,8 @@ function submitForm() {
             snap.pay(data.snap_token, {
                 // Optional
                 onSuccess: function (result) {
-                    location.reload();
+                    //location.reload();
+                    window.location = "/success";;
                 },
                 // Optional 
                 onPending: function (result) {
@@ -1420,9 +1432,14 @@ function submitForm() {
                 quantityBuy: $('#quantityBuy').val(),
                 
                 subdistrictID: $('#subdistrictID').val(),
+                subdistrictIDText: $('#subdistrictID option:selected').text(),
+
                 cityID: $('#cityID').val(),
+                cityIDText: $('#cityID option:selected').text(),
+                
 
                 provinceID: $('#provinceID').val(),
+                provinceIDText: $('#provinceID option:selected').text(),
 
                 paidID: $('#paidID').val(),
                 akun_order: akun_order,
@@ -1495,6 +1512,8 @@ function submitForm() {
                 var _this = $(this).val();
                 let subdistrictID = $("#subdistrictID").val();                
                 let courirDT = $("#courierID").val();                
+                let qtyOrder = $("#quantity_all").val();                
+                let weightOrder = $("#weight_all").val();                
                 $.ajax({
 
 					url: "{{ route('rajaOngkir.getCost') }}",
@@ -1503,6 +1522,8 @@ function submitForm() {
 					data: {						
 						destination: subdistrictID,
 						courirDT: courirDT,
+						qtyOrder: qtyOrder,
+						weightOrder: weightOrder,
 						courierID: _this
 					},
 

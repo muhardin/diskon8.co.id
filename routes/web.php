@@ -31,7 +31,7 @@ Route::get('/getCity', 'FrontController@getCity')->name('rajaOngkir.getCity');
 Route::get('/getSubdistrict', 'FrontController@getSubdistrict')->name('rajaOngkir.getSubdistrict');
 Route::get('/getCost', 'FrontController@getCost')->name('rajaOngkir.getCost');
 
-Route::get('/paid', 'FrontController@paid');
+Route::post('/paid', 'FrontController@paid');
 Route::get('/success', 'FrontController@success');
 
 Route::post('/donation/addtocart', 'FrontController@addtocart')->name('donation.addtocart');
